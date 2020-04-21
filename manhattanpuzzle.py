@@ -5,7 +5,9 @@ def manhattanpuzzle(start, goal, size):
     path = stateSearch([start], goal, [], 1, size)
 
     for x in path:
-        print(x) 
+        for y in x:
+            print(y) 
+        print('\n')
 
 def stateSearch(unexplored, goal, path, depth, size):
 
@@ -14,7 +16,7 @@ def stateSearch(unexplored, goal, path, depth, size):
         '\npath = ', path
     )
 
-    if unexplored == [] or depth > 11:
+    if unexplored == [] or depth > 31:
         return []
     
     dist = 99999
@@ -22,26 +24,57 @@ def stateSearch(unexplored, goal, path, depth, size):
 
     for x in range(len(unexplored)):
         
-        if len(path) > 2 and path[-2] == unexplored[x]:
-                print(
-                        'unexplored[', x, '] = ', unexplored[x],
-                        '\npath[-1] = ', path[-1],
-                        '\npath[-2] = ', path[-2],
-                    )
-
-                print('repeat')
+        if len(path) > 0 and path[-1] == unexplored[x]:
+            print(
+                    'repeat:\n'
+                    'unexplored[', x, '] = ', unexplored[x],
+                    '\npath[-1] = ', path[-1],
+                    '\n path len = ', len(path)
+                )
+        elif len(path) > 1 and path[-2] == unexplored:
+            print(
+                'repeat:\n'
+                'unexplored[', x, '] = ', unexplored[x],
+                '\npath[-2] = ', path[-2],
+                '\n path len = ', len(path)
+            )
+        elif len(path) > 2 and path[-3] == unexplored:
+            print(
+                'repeat:\n'
+                'unexplored[', x, '] = ', unexplored[x],
+                '\npath[-3] = ', path[-3],
+                '\n path len = ', len(path)
+            )
+        elif len(path) > 3 and path[-4] == unexplored:
+            print(
+                'repeat:\n'
+                'unexplored[', x, '] = ', unexplored[x],
+                '\npath[-4] = ', path[-4],
+                '\n path len = ', len(path)
+            )
         else:
-            print('found shorter')
+            
             curr = findManhattan(unexplored[x], goal, size)
 
-            if curr < dist:
+            if curr < dist: #TODO: implement sorting on array so it can try next best MD
+                print(
+                    'found shorter',
+                    '\nmanDist = ', curr
+                )
                 dist = curr
                 whichBoard = x
 
     if goal == unexplored[whichBoard]:
         return path + [goal]
     else:    
-        return stateSearch(findChildren(unexplored[whichBoard], size), goal, path + [unexplored[whichBoard]], depth + 1, size)
+        result = stateSearch(findChildren(unexplored[whichBoard], size), goal, path + [unexplored[whichBoard]], depth + 1, size)
+
+        if result != []:
+            return result
+        else:
+            return stateSearch
+
+
 
 
 def findManhattan(board, goal, size):
