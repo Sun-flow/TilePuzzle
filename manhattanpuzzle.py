@@ -9,6 +9,8 @@ def manhattanpuzzle(start, goal, size):
             print(y) 
         print('\n')
 
+    print('Path length = ', len(path))
+
 def stateSearch(unexplored, goal, path, depth, size):
 
     print(
@@ -16,63 +18,88 @@ def stateSearch(unexplored, goal, path, depth, size):
         '\npath = ', path
     )
 
-    if unexplored == [] or depth > 31:
+    if unexplored == [] or depth > 20:
         return []
     
-    dist = 99999
-    whichBoard = 0
-
+    
+    curr = []
     for x in range(len(unexplored)):
+        if not isRepeat(unexplored[x], path):            
+            curr.append((x, findManhattan(unexplored[x], goal, size)))
+
+    boards = sortBoards(curr)
+
+    print(
+        'boards = ', boards
+    )
+
+    for x in range(len(boards)):
+        print(
+            'board ', x + 1,
+            ' in range ', len(boards),
+            '\n', boards
+        )
+        currBoard = unexplored[boards[x][0]]
+        if goal == currBoard:
+            return path + [goal]
         
-        if len(path) > 0 and path[-1] == unexplored[x]:
-            print(
-                    'repeat:\n'
-                    'unexplored[', x, '] = ', unexplored[x],
-                    '\npath[-1] = ', path[-1],
-                    '\n path len = ', len(path)
-                )
-        elif len(path) > 1 and path[-2] == unexplored:
-            print(
-                'repeat:\n'
-                'unexplored[', x, '] = ', unexplored[x],
-                '\npath[-2] = ', path[-2],
-                '\n path len = ', len(path)
-            )
-        elif len(path) > 2 and path[-3] == unexplored:
-            print(
-                'repeat:\n'
-                'unexplored[', x, '] = ', unexplored[x],
-                '\npath[-3] = ', path[-3],
-                '\n path len = ', len(path)
-            )
-        elif len(path) > 3 and path[-4] == unexplored:
-            print(
-                'repeat:\n'
-                'unexplored[', x, '] = ', unexplored[x],
-                '\npath[-4] = ', path[-4],
-                '\n path len = ', len(path)
-            )
-        else:
-            
-            curr = findManhattan(unexplored[x], goal, size)
-
-            if curr < dist: #TODO: implement sorting on array so it can try next best MD
-                print(
-                    'found shorter',
-                    '\nmanDist = ', curr
-                )
-                dist = curr
-                whichBoard = x
-
-    if goal == unexplored[whichBoard]:
-        return path + [goal]
-    else:    
-        result = stateSearch(findChildren(unexplored[whichBoard], size), goal, path + [unexplored[whichBoard]], depth + 1, size)
+        result = stateSearch(findChildren(currBoard, size),goal, path + [currBoard], depth + 1, size)
 
         if result != []:
             return result
-        else:
-            return stateSearch
+    
+    return []
+
+
+def isRepeat(currBoard, path):
+
+    if len(path) > 0 and path[-1] == currBoard:
+        print(
+                'repeat:\n'
+                'currboard = ', currBoard,
+                '\npath[-1] = ', path[-1],
+                '\n path len = ', len(path)
+        )
+        return True
+    elif len(path) > 1 and (path[-2] == currBoard or path[-1] == currBoard):
+        print(
+            'repeat:\n'
+            'currboard = ', currBoard,
+            '\npath[-2] = ', path[-2],
+            '\n path len = ', len(path)
+        )
+        return True
+    elif len(path) > 2 and (path[-2] == currBoard or path[-1] == currBoard or path[-3] == currBoard):
+        print(
+            'repeat:\n'
+            'currboard = ', currBoard,
+            '\npath[-3] = ', path[-3],
+            '\n path len = ', len(path)
+        )
+        return True
+    elif len(path) > 3 and (path[-2] == currBoard or path[-1] == currBoard or path[-3] == currBoard or path[-4] == currBoard):
+        print(
+            'repeat:\n'
+            'currboard = ', currBoard,
+            '\npath[-4] = ', path[-4],
+            '\n path len = ', len(path)
+        )
+        return True
+    else:
+        return False
+
+
+
+def sortBoards(arr):
+    print(
+        'Tuple Array: ', arr
+    )
+    for x in range(len(arr)):
+        for y in range(0, len(arr)-x-1):
+            if arr[y][1] > arr[y+1][1]:
+                arr[y], arr[y+1] = arr[y+1], arr[y]
+    
+    return arr
 
 
 
