@@ -15,15 +15,11 @@ def manhattanpuzzle(start, goal):
     print('Path length = ', len(path))
 
 def stateSearch(unexplored, goal, path, depth, size):
-    if depth > 15:
+    if depth > 25:
         return []
     elif goal == unexplored[0]:
-        return path + [goal]
+        return path
     children = findChildren(unexplored, size)
-    print(
-        'children = ', children
-    )
-    
     curr = []
     for x in range(len(children)):
         if not isRepeat(children[x][0], path):            
@@ -106,13 +102,6 @@ def generateLeftMove(currState, size, emptyTile):
     localState = deepcopy(currState[0])
     x = emptyTile[0]
     y = emptyTile[1]
-
-    print(
-        'x = ', x,
-        '\ny = ', y,
-        '\nlocalState = ', localState
-    )
-
     if y > 0:
         if localState[x][y] == 0:
             left = localState[x][y - 1]
