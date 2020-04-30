@@ -2,7 +2,7 @@
 from copy import deepcopy
 
 def manhattanpuzzle(start, goal):
-    size = len(start)
+    size = (len(start), len(start[0]))
     emptyTile = findTile(0, start, size)
     board = (start, emptyTile)
     path = stateSearch(board, goal, [board[0]], 1, size)
@@ -61,8 +61,8 @@ def sortBoards(arr):
 
 def findmanhattan(board, goal, size):
     manDist = 0
-    for x in range(size):
-        for y in range(size):
+    for x in range(size[0]):
+        for y in range(size[1]):
             tileLoc = findTile(board[x][y], goal, size)
             manDist += abs(tileLoc[0] - x) + abs(tileLoc[1] - y)
 
@@ -70,8 +70,8 @@ def findmanhattan(board, goal, size):
 
 
 def findTile(num, board, size):
-    for x in range(size):
-        for y in range(size):
+    for x in range(size[0]):
+        for y in range(size[1]):
             if board[x][y] == num:
                 return (x, y)
 
@@ -86,7 +86,7 @@ def findChildren(board, size):
         if left != None:
             newStates += [left]
 
-    if y < size - 1:
+    if y < size[1] - 1:
         right = generateRightMove(board, size, emptyTile)    
         if right != None:
             newStates += [right]
@@ -96,7 +96,7 @@ def findChildren(board, size):
         if up != None:
             newStates += [up]
 
-    if x < size - 1:
+    if x < size[0] - 1:
         down = generateDownMove(board, size, emptyTile)
         if down  != None:
             newStates += [down]
@@ -120,7 +120,7 @@ def generateRightMove(currState, size, emptyTile):
     localState = deepcopy(currState)
     x = emptyTile[0]
     y = emptyTile[1]
-    if y < size - 1:
+    if y < size[1] - 1:
         if localState[x][y] == 0:
             right = localState[x][y + 1]
             localState[x][y] = right
@@ -145,7 +145,7 @@ def generateDownMove(currState, size, emptyTile):
     localState = deepcopy(currState)
     x = emptyTile[0]
     y = emptyTile[1]
-    if x < size - 1:
+    if x < size[0] - 1:
         if localState[x][y] == 0:
             down = localState[x + 1][y]
             localState[x][y] = down

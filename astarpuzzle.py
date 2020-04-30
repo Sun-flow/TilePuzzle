@@ -11,8 +11,10 @@ def toTup(inList):
     return tuple(tupArr)
 
 
+#TODO: Implement non-square board sizes (use a tuple for x and y size)
+
 def astarpuzzle(start, goal):
-    size = len(start)
+    size = (len(start), len(start[0]))
     emptyTile = manhattanpuzzle.findTile(0, start, size)
     board = (start, emptyTile)
     output = stateSearch(start, goal, board, 1, size)
