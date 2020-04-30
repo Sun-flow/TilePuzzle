@@ -3,17 +3,25 @@ from queue import PriorityQueue
 import manhattanpuzzle
 
 
-def toTup(list):
-    return (tuple(list[0]), tuple(list[1]), tuple(list[2]))
+def toTup(inList):
+    tupArr = []
+    for row in inList:
+        tupArr += [tuple(row)]
+
+    return tuple(tupArr)
 
 
 def astarpuzzle(start, goal):
     size = len(start)
     emptyTile = manhattanpuzzle.findTile(0, start, size)
     board = (start, emptyTile)
-    cameFrom = stateSearch(start, goal, board, 1, size)
+    output = stateSearch(start, goal, board, 1, size)
+    cameFrom = output[0]
+    moves = output[1]
+    states = output[2]
+    generated = output[3]
 
-    currBoard = (tuple(goal[0]), tuple(goal[1]), tuple(goal[2]))
+    currBoard = (toTup(goal))
     path = [goal]
     while cameFrom[currBoard] != None:
         path += [cameFrom[currBoard]]
@@ -26,19 +34,26 @@ def astarpuzzle(start, goal):
         for row in board:
             print(row)
     print('Path length = ', len(flipPath))
+    print('# of moves: ', moves)
+    print('# of states explored: ', states)
+    print('# of states generated: ', generated)
 
 def stateSearch(startBoard, goal, path, depth, size):
     open = PriorityQueue()
-    goalTup = (tuple(goal[0]), tuple(goal[1]), tuple(goal[2]))
+    goalTup = toTup(goal)
     dist = manhattanpuzzle.findmanhattan(startBoard, goal, size)
     open.put((dist, 0, startBoard))
-    cameFrom = {(tuple(startBoard[0]), tuple(startBoard[1]), tuple(startBoard[2])) : None}
-    moves = {(tuple(startBoard[0]), tuple(startBoard[1]), tuple(startBoard[2])) : 0}
+    cameFrom = {toTup(startBoard) : None}
+    moves = {toTup(startBoard) : 0}
 
+    states = 0
+    generated = 0
     while not open.empty():
         currBoard = open.get()
+        states += 1
         for child in manhattanpuzzle.findChildren(currBoard[2], size):
-            childTup = (tuple(child[0]), tuple(child[1]), tuple(child[2]))
+            generated += 1
+            childTup = toTup(child)
             if childTup not in cameFrom:
                 dist = currBoard[1] + manhattanpuzzle.findmanhattan(childTup, goal, size) + 1
                 open.put((dist, currBoard[1]+1, child))
@@ -50,7 +65,8 @@ def stateSearch(startBoard, goal, path, depth, size):
                     cameFrom[childTup] = currBoard[2]
 
             if goalTup == childTup:
-                return cameFrom
+                
+                return (cameFrom, moves[childTup], states, generated)
             
 
         
