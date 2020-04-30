@@ -79,22 +79,27 @@ def findTile(num, board, size):
 def findChildren(board, size):
     emptyTile = findTile(0, board, size)
     newStates = []
+    x = emptyTile[0]
+    y = emptyTile[1]
+    if y > 0:
+        left = generateLeftMove(board, size, emptyTile)
+        if left != None:
+            newStates += [left]
 
-    left = generateLeftMove(board, size, emptyTile)
-    if left != None:
-        newStates += [left]
+    if y < size - 1:
+        right = generateRightMove(board, size, emptyTile)    
+        if right != None:
+            newStates += [right]
 
-    right = generateRightMove(board, size, emptyTile)    
-    if right != None:
-        newStates += [right]
+    if x > 0:
+        up = generateUpMove(board, size, emptyTile)    
+        if up != None:
+            newStates += [up]
 
-    up = generateUpMove(board, size, emptyTile)    
-    if up != None:
-        newStates += [up]
-
-    down = generateDownMove(board, size, emptyTile)
-    if down  != None:
-        newStates += [down]
+    if x < size - 1:
+        down = generateDownMove(board, size, emptyTile)
+        if down  != None:
+            newStates += [down]
     return newStates
 
 
