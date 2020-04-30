@@ -23,7 +23,7 @@ def stateSearch(unexplored, goal, path, depth, size):
     curr = []
     for x in range(len(children)):
         if not isRepeat(children[x][0], path):            
-            curr.append((x, findManhattan(children[x][0], goal, size)))
+            curr.append((x, findmanhattan(children[x][0], goal, size)))
 
     boards = sortBoards(curr)
 
@@ -59,7 +59,7 @@ def sortBoards(arr):
 
 
 
-def findManhattan(board, goal, size):
+def findmanhattan(board, goal, size):
     manDist = 0
     for x in range(size):
         for y in range(size):
@@ -77,8 +77,9 @@ def findTile(num, board, size):
 
 
 def findChildren(board, size):
-    emptyTile = board[1]
+    emptyTile = findTile(0, board, size)
     newStates = []
+
     left = generateLeftMove(board, size, emptyTile)
     if left != None:
         newStates += [left]
@@ -99,7 +100,7 @@ def findChildren(board, size):
 
 #TODO: apply empty tile knowledge, eliminate searches
 def generateLeftMove(currState, size, emptyTile):
-    localState = deepcopy(currState[0])
+    localState = deepcopy(currState)
     x = emptyTile[0]
     y = emptyTile[1]
     if y > 0:
@@ -107,11 +108,11 @@ def generateLeftMove(currState, size, emptyTile):
             left = localState[x][y - 1]
             localState[x][y] = left
             localState[x][y - 1] = 0
-            return (localState, (x,y-1))
+            return localState
 
 
 def generateRightMove(currState, size, emptyTile):
-    localState = deepcopy(currState[0])
+    localState = deepcopy(currState)
     x = emptyTile[0]
     y = emptyTile[1]
     if y < size - 1:
@@ -119,11 +120,11 @@ def generateRightMove(currState, size, emptyTile):
             right = localState[x][y + 1]
             localState[x][y] = right
             localState[x][y + 1] = 0
-            return (localState, (x,y+1))            
+            return localState         
 
 
 def generateUpMove(currState, size, emptyTile):
-    localState = deepcopy(currState[0])
+    localState = deepcopy(currState)
     x = emptyTile[0]
     y = emptyTile[1]
     if x > 0:
@@ -131,12 +132,12 @@ def generateUpMove(currState, size, emptyTile):
             up = localState[x - 1][y]
             localState[x][y] = up
             localState[x - 1][y] = 0
-            return (localState, (x-1,y))
+            return localState
             
 
 
 def generateDownMove(currState, size, emptyTile):
-    localState = deepcopy(currState[0])
+    localState = deepcopy(currState)
     x = emptyTile[0]
     y = emptyTile[1]
     if x < size - 1:
@@ -144,4 +145,4 @@ def generateDownMove(currState, size, emptyTile):
             down = localState[x + 1][y]
             localState[x][y] = down
             localState[x + 1][y] = 0
-            return (localState, (x+1,y))
+            return localState
