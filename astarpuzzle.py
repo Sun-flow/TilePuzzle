@@ -1,6 +1,7 @@
 from copy import deepcopy
 from queue import PriorityQueue
 import manhattanpuzzle
+#Functions used from manhattanpuzzle.py are findmanhattan and generatechildren. Any others are only used in calls to solve using manhattanpuzzle.py alone (outdated search method)
 
 #Function to turn 2D lists into tuples for compatibility with dictionaries
 #!ATTENTION! Hi Professor, this method is actually the method I have the biggest question about. 
@@ -19,8 +20,7 @@ def toTup(inList):
     return tuple(tupArr)
 
 
-#TODO: Implement non-square board sizes (use a tuple for x and y size)
-
+#Search algorithm. Call this to test a path, same as call to tilepuzzle.
 def astarpuzzle(start, goal):
 
     #Gather characteristics of input board for easier
@@ -29,7 +29,7 @@ def astarpuzzle(start, goal):
     #Save search output into list, split into named variables for easier use
     output = stateSearch(start, goal, [start], 1, size)
     cameFrom = output[0] #Dictionary {someBoard : prevBoard}, used to backtrace path
-    moves = output[1] #Dictionary {Board : moves to get to board}
+    moves = output[1] #Dictionary {someBoard : moves to get to someBoard}
     states = output[2] #Counter for number of states explored
     generated = output[3] #Counter for number of states generated
 
@@ -74,7 +74,7 @@ def stateSearch(startBoard, goal, path, depth, size):
 
         #Necessary data for manipulation, saved in intelligible variable
         #currDist = currNode[0]
-        currMoves = currNode[1]
+        currMoves = currNode[1] + 1
         currBoard = currNode[2]        
 
         states += 1
@@ -83,16 +83,22 @@ def stateSearch(startBoard, goal, path, depth, size):
         for child in manhattanpuzzle.findChildren(currBoard, size):
             generated += 1
             childTup = toTup(child)
+
+            #If board hasn't been found before, find the a* dist and add it to open, cameFrom, & moves
+            # Otherwise, check to see if this instance of this board is closer than previous. If it is,
+            # update cameFrom & moves  
             if childTup not in cameFrom:
-                dist = currMoves + manhattanpuzzle.findmanhattan(childTup, goal, size) + 1
-                open.put((dist, currMoves+1, child))
+                dist = currMoves + manhattanpuzzle.findmanhattan(childTup, goal, size)
+                open.put((dist, currMoves, child))
                 cameFrom[childTup] = currBoard
-                moves[childTup] = currMoves+1
+                moves[childTup] = currMoves
             else:
-                if currMoves+1 < moves[childTup]:
-                    moves[childTup] = currMoves+1
+                if currMoves < moves[childTup]:
+                    moves[childTup] = currMoves
                     cameFrom[childTup] = currBoard
 
+
+            #If child is the goal, return proper data (cameFrom list, moves list, explored states tracker, generated states tracker)
             if goalTup == childTup:
                 
                 return (cameFrom, moves[childTup], states, generated)

@@ -57,8 +57,7 @@ def sortBoards(arr):
     return arr
 
 
-
-
+#Return distance of each individual tile to its goal space (innefficient method, time complexity n)
 def findmanhattan(board, goal, size):
     manDist = 0
     for x in range(size[0]):
@@ -68,14 +67,14 @@ def findmanhattan(board, goal, size):
 
     return manDist
 
-
+#Find a certain number on the board, return it's (x,y) coordinates. Only used to find empty square during tile generation to reduce searching. 
 def findTile(num, board, size):
     for x in range(size[0]):
         for y in range(size[1]):
             if board[x][y] == num:
                 return (x, y)
 
-
+#Generate children of input board (max 4, cardinal directions)
 def findChildren(board, size):
     emptyTile = findTile(0, board, size)
     newStates = []
@@ -103,7 +102,6 @@ def findChildren(board, size):
     return newStates
 
 
-#TODO: apply empty tile knowledge, eliminate searches
 def generateLeftMove(currState, size, emptyTile):
     localState = deepcopy(currState)
     x = emptyTile[0]
